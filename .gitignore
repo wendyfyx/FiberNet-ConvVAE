@@ -1,0 +1,8 @@
+.ipynb_checkpoints
+.vscode
+.DS_Store
+data_files
+results
+slides
+src-old
+notebooks/extract_metadata.ipynb
