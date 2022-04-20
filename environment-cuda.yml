@@ -1,0 +1,21 @@
+name: fibernet-cuda
+channels:
+- nvidia
+- pytorch
+- conda-forge
+- defaults
+dependencies:
+- nvidia::cudatoolkit=11.3
+- python=3.9
+- pytorch::pytorch
+- jupyter
+- scikit-learn
+- scipy
+- seaborn
+- matplotlib
+- tqdm
+- dipy
+- fury
+- tensorboard
+- torchvision
+- openpyxl

@@ -15,7 +15,7 @@ def init_model(model_type='3Ls', Z=2, SEED=2021):
 
 
 def parse_model_setting(model_name):
-    '''Parse model name to get model hyperparam info'''
+    '''Parse model name (string) to get model hyperparam info'''
     d_info = {}
     ls = model_name.split("_")
     d_info['model_type'] = ls[0].split('convVAE')[1] # encoder/decoder type

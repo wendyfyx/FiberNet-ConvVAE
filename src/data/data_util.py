@@ -10,7 +10,17 @@ def load_streamlines(fpath, n_points=256, n_lines=None,
                      preprocess=None, rng=None,
                      verbose=True, **kwargs):
 
-    '''Load streamlines from one .trk file (one tract).'''
+    '''
+        Load streamlines from one .trk file (one tract).
+
+        fpath       : file path of streamline (.trk) files.
+        n_points    : number of points per streamline.
+        n_line      : number of lines to load. If n_lines is larger than the number 
+                      of streamlines in file, it loads all available streamlines.
+        preprocess  : can be either 2D or 3D. For ConvVAE, use 3D (n_lines, n_points, 3).
+        rng         : random state , e.p. np.random.RandomState(2022).
+        verbose     : True or False
+    '''
 
     lines = load_tractogram(fpath, reference="same", bbox_valid_check=False).streamlines
     if n_points is not None:
@@ -26,7 +36,7 @@ def load_streamlines(fpath, n_points=256, n_lines=None,
         lines = lines.get_data()
         if verbose:
             print(f"Preprocessed lines into {preprocess} with shape {lines.shape}")
-    if preprocess == "3d":
+    elif preprocess == "3d":
         if n_points == None:
             print("Cannot process into 3D if n_points=None, returning ArraySequence")
             return lines
@@ -44,7 +54,18 @@ def load_streamlines(fpath, n_points=256, n_lines=None,
 def load_bundles(folder_path, parse_tract_func, min_lines=2, 
                 tracts_exclude=None, sub_folder_path="rec_bundles/",
                 **kwargs):
-    '''Load bundles in folder, sorted alphabetically by tract name.'''
+    '''Load bundles in folder, sorted alphabetically by tract name. 
+
+       folder_path      : usually it's where the root folder for each subject is (i.e. Subj01/).
+       parse_tract_func : a custom function that parse the file name to get the 
+                          tract name (moved_CST_L__recognized.trk -> CST_L)
+       min_lines        : minimum number of lines in a tract. Discard if below this threshold.
+       tracts_exclude   : a list containing tracts to not load.
+       sub_folder_path  : (OPTIONAL )it's for when the bundle files are nested in other 
+                          folders (Subj01/rec_bundles/*.trk).
+
+       Can also pass in other arguments for load_streamlines above.
+    '''
 
     lines = []
     bundle_idx = {}
@@ -94,30 +115,6 @@ def make_y(bundle_idx):
         bundle_num[idx] = bundle
     y = np.concatenate(y)
     return y, bundle_num
-
-
-# def load_subject(subj, n_points=256, n_lines=None, 
-#                  preprocess='3d', rng=None,
-#                  min_lines = 2,
-#                  data_folder="../sample-data/",
-#                  verbose=True):
-
-#     '''Load data for one subject, including streamline data and bundle information.'''
-
-#     data_subj = {}
-#     X, bundle_count, bundle_idx = load_bundles(data_folder+subj, 
-#                                                n_points=n_points, n_lines=n_lines, 
-#                                                min_lines = min_lines, preprocess=preprocess, 
-#                                                rng=rng, verbose=verbose)
-#     y, bundle_num = make_y(bundle_count, verbose=verbose)
-#     data_subj['name'] = subj
-#     data_subj['X'] = X
-#     data_subj['bundle_count'] = bundle_count
-#     data_subj['bundle_idx'] = bundle_idx
-#     data_subj['y'] = y
-#     data_subj['bundle_num']=bundle_num
-#     print(f"Loaded {subj} with {len(bundle_count)} tracts and {len(X)} lines.")
-#     return data_subj
 
 
 def split_data(X, y=None, n_splits=10, test_size=0.2, random_state=1):
